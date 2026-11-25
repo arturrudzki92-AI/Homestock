@@ -1,4 +1,4 @@
-const CACHE='homestock-v0.3.2';
+const CACHE='homestock-v0.3.3';
 self.addEventListener('install',e=>e.waitUntil((async()=>{const c=await caches.open(CACHE);await c.addAll(['./index.html','./manifest.json','./icon.svg']);await self.skipWaiting()})()));
 self.addEventListener('activate',e=>e.waitUntil((async()=>{for(const k of await caches.keys())if(k!==CACHE&&k.startsWith('homestock-'))await caches.delete(k);await self.clients.claim()})()));
 self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||new URL(e.request.url).origin!==location.origin)return;if(e.request.mode==='navigate'){e.respondWith((async()=>{try{const r=await fetch(e.request,{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);return r}catch{return (await caches.match(new URL('./index.html',self.registration.scope).href))||Response.error()}})());return}e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))});
